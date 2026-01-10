@@ -31,38 +31,43 @@ int main()
 	while(getline(file, line)){
 		lineCount++;
 	}
-	bool used[lineCount]={false};
+	const int max=lineCount;
+	bool used[max]={false};
 	int remainder=lineCount;
 	int howMany;
 	
-	for(int q=1; q<=howMany; q++){
-	int questionNumber=0;
+	do{
 	cout<<"Kaç soruluk yarýþma istiyorsunuz? (1-"<<remainder<<"): ";
 	cin>>howMany;
+	
+	if(howMany<1 || remainder<howMany){
+		cout<<"Geçersiz sayý! Kalan soru sayýsý: "<<remainder;
+	    continue; 
+	}
+	
 	remainder-=howMany;
+	correctAnswer = userAnswer ="";
 	cout<<endl;
 	cout<<"=== BÝLGÝ YARIÞMASI BAÞLADI ===\n"<<endl;
 	
-	file.close();
-	file.open("questions.txt");
+	for(int qn=0; qn<howMany; qn++){
+	    file.close();
+	    file.open("questions.txt");
 	
-	int randomLine;
-	do{
-	    randomLine=(rand()%lineCount+1);
-    }while(used[randomLine]==true);
+	    int randomLine;
+	    do{
+	        randomLine=rand()%lineCount;
+        }while(used[randomLine]==true);
     
-    int currentLine=1;
-	while(getline(file, line)){
-		if(currentLine==randomLine){
-			used[randomLine]=true;
-			break;
-		}currentLine++;
-	}
+        int currentLine=1;
+	    while(getline(file, line)){
+		    if(currentLine==randomLine){
+			    used[randomLine]=true;
+			    break;
+		    }currentLine++;
+	    }
 	
-	correctAnswer = userAnswer ="";
-	
-	while(getline(file, line)){
-		question = optionA = optionB = optionC = optionD ="";
+        question = optionA = optionB = optionC = optionD ="";
 		count=0;
 			for(int j=0; j<line.length(); j++){
 				if(line[j]==';'){
@@ -82,8 +87,7 @@ int main()
 			    else
 			        correctAnswer+=line[j];
 			}
-			questionNumber++;
-		cout<<"Soru "<<questionNumber<<": "<<question<<endl;
+		cout<<"Soru "<<qn+1<<": "<<question<<endl;
 		cout<<"A) "<<optionA<<endl;
 		cout<<"B) "<<optionB<<endl;
 		cout<<"C) "<<optionC<<endl;
@@ -93,7 +97,6 @@ int main()
 		cout<<endl;
 		
 		userAnswer+=char(toupper(answer));
-		if(questionNumber==howMany) break;
 	    }
 	    
 	    cout<<"=== SONUÇ RAPORU ===\n"<<endl;
@@ -127,7 +130,7 @@ int main()
 	    cout<<endl;
 	    else if(again=='H' || again=='h')
 	    break;
-	    }
+	    } while(1);
 	    
 	file.close();
 	return 0;
