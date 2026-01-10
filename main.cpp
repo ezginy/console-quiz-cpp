@@ -13,7 +13,7 @@ int main()
 	string line;
 	string question, optionA, optionB, optionC, optionD, userAnswer, correctAnswer;
 	char answer;
-	int count;
+	int count, lineCount=0;
 	int trueNum=0, falseNum=0, emptyNum=0;
 	float total=0.0, score=0.0;
 	
@@ -25,16 +25,19 @@ int main()
 		return 0;
 	}
 	
-	cout<<"- - - QUIZ - - -"<<endl;
-	
-	int lineCount=0;
 	while(getline(file, line)){
-		lineCount++;
+		lineCount++; }
+	
+	const int maxQuestions=200;
+	bool used[maxQuestions]={false};
+	if(lineCount>maxQuestions){
+		cout<<"Dosyada çok fazla soru var! (MAX : "<<maxQuestions<<")";
+		return 0;
 	}
-	const int max=lineCount;
-	bool used[max]={false};
+	
 	int remainder=lineCount;
 	int howMany;
+	cout<<"- - - QUIZ - - -"<<endl;
 	
 	do{
 	cout<<"Kaç soruluk yarýþma istiyorsunuz? (1-"<<remainder<<"): ";
@@ -59,7 +62,7 @@ int main()
 	        randomLine=rand()%lineCount;
         }while(used[randomLine]==true);
     
-        int currentLine=1;
+        int currentLine=0;
 	    while(getline(file, line)){
 		    if(currentLine==randomLine){
 			    used[randomLine]=true;
@@ -68,13 +71,14 @@ int main()
 	    }
 	
         question = optionA = optionB = optionC = optionD ="";
-		count=0;
+		count=0; 
 			for(int j=0; j<line.length(); j++){
 				if(line[j]==';'){
 				    count++;
 				    continue;
 			    }
-			    if(count==0)
+			    
+				if(count==0)
 			        question+=line[j];
 			    else if(count==1)
 			        optionA+=line[j];
@@ -84,19 +88,24 @@ int main()
 			        optionC+=line[j];
 			    else if(count==4)
 			        optionD+=line[j];
-			    else
-			        correctAnswer+=line[j];
+			    else if(count==5)
+			        correctAnswer+=char(line[j]);
 			}
 		cout<<"Soru "<<qn+1<<": "<<question<<endl;
 		cout<<"A) "<<optionA<<endl;
 		cout<<"B) "<<optionB<<endl;
 		cout<<"C) "<<optionC<<endl;
 		cout<<"D) "<<optionD<<endl;
-		cout<<"Cevabiniz (A-D, boþ için X): ";
+		cout<<"Cevabýnýz (A-D, boþ için X): ";
 		cin>>answer;
 		cout<<endl;
 		
-		userAnswer+=char(toupper(answer));
+		answer=char(toupper(answer));
+		    if(answer!='A' && answer!='B' && answer!='C' && answer!='D' && answer!='X'){
+			    cout<<"Geçersiz cevap, boþ sayýldý.\n"<<endl;
+		    	answer='X';
+		    } 
+		userAnswer+=answer;
 	    }
 	    
 	    cout<<"=== SONUÇ RAPORU ===\n"<<endl;
@@ -111,8 +120,9 @@ int main()
 	    	else
 	    	falseNum++;
 		}
-		total=trueNum-falseNum/3.0;
-		score=fabs(total)*(100.0/howMany);
+		total=trueNum-(falseNum/3.0);
+		if(total<0) total=0; 
+		score=total*(100.0/howMany);
 		
 		cout<<"\n--- ÝSTATÝSTÝKLER ---"<<endl;
 		cout<<"Doðru : "<<trueNum<<endl;
