@@ -3,6 +3,7 @@
 #include <fstream>
 #include <cstdlib>
 #include <ctime>
+#include <cmath>
 using namespace std;
 
 int main()
@@ -37,15 +38,16 @@ int main()
 	cout<<endl;
 	cout<<"=== BÝLGÝ YARIÞMASI BAÞLADI ===\n"<<endl;
 	
+	file.close();
+	file.open("questions.txt");
+	int randomLine=(rand()%lineCount+1);
+	int currentLine=0;
+	while(getline(file, line)){
+		if(currentLine==randomLine) break;
+			currentLine++;
+	}
 	
 	while(getline(file, line)){
-		
-		int randomLine=(rand()%lineCount+1);
-	    int currentLine=0;
-		while(getline(file, line)){
-			if(currentLine==randomLine) break;
-			currentLine++;
-		}
 		question="", optionA="", optionB="", optionC="", optionD="";
 		count=0;
 			for(int j=0; j<line.length(); j++){
@@ -80,9 +82,8 @@ int main()
 		if(questionNumber==howMany) break;
 	    }
 	    
-	    
 	    cout<<"=== SONUÇ RAPORU ===\n"<<endl;
-	    count=1;
+	    count=1, trueNum=0, emptyNum=0, falseNum=0, total=0.0, score=0.0;
 	    for(int i=0; i<howMany; i++){
 	    	cout<<"Soru "<<count++<<" | Senin cevabin: "<<char(toupper(userAnswer[i]))<<" | Doðru cevap: "<<correctAnswer[i]<<endl;
 	    	
@@ -94,6 +95,7 @@ int main()
 	    	falseNum++;
 		}
 		total=trueNum-falseNum/3.0;
+		score=fabs(total)*(100.0/howMany);
 		
 		cout<<"\n--- ÝSTATÝSTÝKLER ---"<<endl;
 		cout<<"Doðru : "<<trueNum<<endl;
@@ -101,7 +103,6 @@ int main()
 		cout<<"Boþ   : "<<emptyNum<<endl;
 		cout<<"Net   : "<<total<<endl;
 		
-		score=total*(100/howMany);
 		cout<<"\nPuanýnýz: "<<score<<" / 100"<<endl;
 		
 	    char again;
@@ -115,18 +116,6 @@ int main()
 	    
 	    } while(1);
 	    
-	    
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	file.close();
 	return 0;
 }
